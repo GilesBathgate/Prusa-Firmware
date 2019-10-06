@@ -6,6 +6,7 @@
 #include "mesh_bed_leveling.h"
 #include "stepper.h"
 #include "ultralcd.h"
+#include "temperature.h"
 
 uint8_t world2machine_correction_mode;
 float   world2machine_rotation_and_skew[2][2];
@@ -821,6 +822,7 @@ static inline void update_current_position_z()
 // At the current position, find the Z stop.
 inline bool find_bed_induction_sensor_point_z(float minimum_z, uint8_t n_iter, int verbosity_level)
 {
+    bedPWMDisabled = 1;
 	#ifdef SUPPORT_VERBOSITY
     if(verbosity_level >= 10) SERIAL_ECHOLNPGM("find bed induction sensor point z");
 	#endif // SUPPORT_VERBOSITY
@@ -860,12 +862,14 @@ inline bool find_bed_induction_sensor_point_z(float minimum_z, uint8_t n_iter, i
     enable_endstops(endstops_enabled);
     enable_z_endstop(endstop_z_enabled);
 //    SERIAL_ECHOLNPGM("find_bed_induction_sensor_point_z 3");
+    bedPWMDisabled = 0;
     return true;
 
 error:
 //    SERIAL_ECHOLNPGM("find_bed_induction_sensor_point_z 4");
     enable_endstops(endstops_enabled);
     enable_z_endstop(endstop_z_enabled);
+    bedPWMDisabled = 0;
     return false;
 }
 

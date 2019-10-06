@@ -57,6 +57,8 @@ extern float current_temperature_bed;
   extern unsigned char soft_pwm_bed;
 #endif
 
+extern bool bedPWMDisabled;
+
 #ifdef PIDTEMP
   extern int pid_cycle, pid_number_of_cycles;
   extern float Kp,Ki,Kd,Kc,_Kp,_Ki,_Kd;

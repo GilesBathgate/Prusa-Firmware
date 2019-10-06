@@ -48,6 +48,9 @@ int current_temperature_raw[EXTRUDERS] = { 0 };
 float current_temperature[EXTRUDERS] = { 0.0 };
 int current_temperature_bed_raw = 0;
 float current_temperature_bed = 0.0;
+
+bool bedPWMDisabled = 0;
+
 #ifdef TEMP_SENSOR_1_AS_REDUNDANT
   int redundant_temperature_raw = 0;
   float redundant_temperature = 0.0;
@@ -1320,6 +1323,7 @@ void disable_heater()
   #if defined(TEMP_BED_PIN) && TEMP_BED_PIN > -1
     target_temperature_bed=0;
     soft_pwm_bed=0;
+	bedPWMDisabled = 0;
     #if defined(HEATER_BED_PIN) && HEATER_BED_PIN > -1  
       WRITE(HEATER_BED_PIN,LOW);
     #endif
@@ -1526,7 +1530,11 @@ ISR(TIMER0_COMPB_vect)
 #endif
 #if defined(HEATER_BED_PIN) && HEATER_BED_PIN > -1
     soft_pwm_b = soft_pwm_bed;
-    if(soft_pwm_b > 0) WRITE(HEATER_BED_PIN,1); else WRITE(HEATER_BED_PIN,0);
+    if(soft_pwm_b > 0) {
+        if(!bedPWMDisabled) WRITE(HEATER_BED_PIN,1);
+    } else {
+        WRITE(HEATER_BED_PIN,0);
+    }
 #endif
 #ifdef FAN_SOFT_PWM
     soft_pwm_fan = fanSpeedSoftPwm / 2;
@@ -1658,7 +1666,7 @@ ISR(TIMER0_COMPB_vect)
 	  state_timer_heater_b = MIN_STATE_TIME;
 	}
 	state_heater_b = 1;
-	WRITE(HEATER_BED_PIN, 1);
+	if (!bedPWMDisabled) WRITE(HEATER_BED_PIN, 1);
       }
     } else {
       // turn OFF heather only if the minimum time is up 
