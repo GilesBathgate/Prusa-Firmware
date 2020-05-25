@@ -19,7 +19,7 @@
   #endif
   
 
-  #define FR_SENS 21
+  #define FR_SENS 23
 
 
   #define X_STEP_PIN 37
