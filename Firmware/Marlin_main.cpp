@@ -3331,7 +3331,6 @@ void process_commands()
 		SERIAL_ECHOLNPGM("clean up finished ");
 		if(temp_cal_active == true && calibration_status_pinda() == true) temp_compensation_apply(); //apply PINDA temperature compensation
 		babystep_apply(); // Apply Z height correction aka baby stepping before mesh bed leveing gets activated.
-		SERIAL_ECHOLNPGM("babystep applied");
 		bool eeprom_bed_correction_valid = eeprom_read_byte((unsigned char*)EEPROM_BED_CORRECTION_VALID) == 1;
 
 		#ifdef SUPPORT_VERBOSITY
@@ -6747,9 +6746,9 @@ void temp_compensation_apply() {
 			//interpolation
 			z_shift_mm = temp_comp_interpolation(target_temperature_bed) / axis_steps_per_unit[Z_AXIS];
 		}
-		SERIAL_PROTOCOLPGM("\n");
 		SERIAL_PROTOCOLPGM("Z shift applied:");
-		MYSERIAL.print(z_shift_mm);
+		SERIAL_PROTOCOL(z_shift_mm);
+		SERIAL_PROTOCOLPGM("\n");
 		plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS] - z_shift_mm, current_position[E_AXIS], homing_feedrate[Z_AXIS] / 40, active_extruder);
 		st_synchronize();
 		plan_set_z_position(current_position[Z_AXIS]);

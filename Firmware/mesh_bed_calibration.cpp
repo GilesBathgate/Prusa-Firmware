@@ -2530,7 +2530,11 @@ void babystep_apply()
         SERIAL_ECHOLN("");
     #endif
     #ifdef BABYSTEP_LOADZ_BY_PLANNER
-        shift_z(- float(babystepLoadZ) / float(axis_steps_per_unit[Z_AXIS]));
+        float babysteps_mm = - float(babystepLoadZ) / float(axis_steps_per_unit[Z_AXIS]);
+        shift_z(babysteps_mm);
+        SERIAL_PROTOCOLPGM("babystep applied:");
+        SERIAL_PROTOCOL(babysteps_mm);
+        SERIAL_PROTOCOLPGM("\n");
     #else
         babystepsTodoZadd(babystepLoadZ);
     #endif /* BABYSTEP_LOADZ_BY_PLANNER */
