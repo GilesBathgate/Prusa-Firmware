@@ -65,10 +65,7 @@
 #include "ultralcd.h"
 #include "sound.h"
 
-// Macros for bit masks
-#define BIT(b) (1<<(b))
-#define TEST(n,b) (((n)&BIT(b))!=0)
-#define SET_BIT(n,b,value) (n) ^= ((-value)^(n)) & (BIT(b))
+#include "macros.h"
 
 // look here for descriptions of G-codes: http://linuxcnc.org/handbook/gcode/g-code.html
 // http://objects.reprap.org/wiki/Mendel_User_Manual:_RepRapGCodes
