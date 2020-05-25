@@ -312,7 +312,7 @@
 #define MSG_SORT_ALPHA						"Sortuj: [Alfabet]"
 #define MSG_SORT_NONE						"Sortuj: [Zaden]"
 #define MSG_WIZARD							"Wizard"
-#define MSG_DEFAULT_SETTINGS_LOADED			"Ustawienia domyúlne"
+#define MSG_DEFAULT_SETTINGS_LOADED			"Ustawienia domy≈õlne"
 #define MSG_SORTING							"Sortowanie plikow"
 #define MSG_FILE_INCOMPLETE					"Plik niekompletny. Kontynuowac?"
 #define MSG_WIZARD_WELCOME					"Czesc, jestem Twoja drukarka Original Prusa i3. Czy potrzebujesz pomocy z instalacja?"
