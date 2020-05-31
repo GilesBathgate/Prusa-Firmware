@@ -3449,32 +3449,36 @@ void process_commands()
             SERIAL_PROTOCOL_F(current_position[Z_AXIS], 5);
             SERIAL_PROTOCOLPGM("\n");
             break;
-
+#endif
             /**
              * G83: Prusa3D specific: Babystep in Z and store to EEPROM
              */
         case 83:
         {
-            int babystepz = code_seen('S') ? code_value() : 0;
-            int BabyPosition = code_seen('P') ? code_value() : 0;
-            
-            if (babystepz != 0) {
-                //FIXME Vojtech: What shall be the index of the axis Z: 3 or 4?
-                // Is the axis indexed starting with zero or one?
-                if (BabyPosition > 4) {
-                    SERIAL_PROTOCOLLNPGM("Index out of bounds");
-                }else{
-                    // Save it to the eeprom
-                    babystepLoadZ = babystepz;
-                    EEPROM_save_B(EEPROM_BABYSTEP_Z0+(BabyPosition*2),&babystepLoadZ);
-                    // adjust the Z
-                    babystepsTodoZadd(babystepLoadZ);
-                }
-            
-            }
+          if(code_seen('S'))
+          {
+            float babystepz_mm = code_value();
+            int babystepz = babystepz_mm * axis_steps_per_unit[Z_AXIS];
+
+            // Save it to the eeprom
+            EEPROM_save_B(EEPROM_BABYSTEP_Z,&babystepz);
+            SERIAL_PROTOCOLPGM("babystepz:");
+            SERIAL_PROTOCOL_F(babystepz_mm, 3);
+            SERIAL_PROTOCOLPGM("\n");
+            calibration_status_store(CALIBRATION_STATUS_CALIBRATED);
+          } else {
+            SERIAL_PROTOCOLPGM("No new value specified!\n");
+            int babystepz;
+            EEPROM_read_B(EEPROM_BABYSTEP_Z,&babystepz);
+            float babystepz_mm = babystepz / axis_steps_per_unit[Z_AXIS];
+            SERIAL_PROTOCOLPGM("babystepz:");
+            SERIAL_PROTOCOL_F(babystepz_mm, 3);
+            SERIAL_PROTOCOLPGM("\n");
+          }
             
         }
         break;
+#if 0
             /**
              * G84: Prusa3D specific: UNDO Babystep Z (move Z axis back)
              */
