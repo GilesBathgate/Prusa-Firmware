@@ -4311,24 +4311,43 @@ Sigma_Exit:
         LCD_MESSAGERPGM(MSG_BED_HEATING);
 		heating_status = 3;
 		if (farm_mode) { prusa_statistics(1); };
+
+        float expected_temp;
         if (code_seen('S')) 
-		{
-          setTargetBed(code_value());
+        {
+          expected_temp = code_value();
+          setTargetBed(expected_temp);
           CooldownNoWait = true;
         } 
-		else if (code_seen('R')) 
-		{
-          setTargetBed(code_value());
+        else if (code_seen('R'))
+        {
+          expected_temp = code_value();
+          setTargetBed(expected_temp);
           CooldownNoWait = false;
         }
+
+        if (code_seen('T'))
+        {
+          expected_temp = code_value();
+
+          //If we are heating up we can't expect to get higher than the target
+          if (isHeatingBed() && expected_temp > target_temperature_bed)
+              expected_temp = target_temperature_bed;
+
+          //If we are cooling down we can't expect to get lower than the target
+          if (isCoolingBed() && expected_temp < target_temperature_bed)
+              expected_temp = target_temperature_bed;
+        }
+
         codenum = millis();
         
         cancel_heatup = false;
-        target_direction = isHeatingBed(); // true if heating, false if cooling
+        target_direction = isHeatingBed(expected_temp); // true if heating, false if cooling
 
 		KEEPALIVE_STATE(NOT_BUSY);
-        while ( (target_direction)&&(!cancel_heatup) ? (isHeatingBed()) : (isCoolingBed()&&(CooldownNoWait==false)) )
+        while ( (target_direction)&&(!cancel_heatup) ? (isHeatingBed(expected_temp)) : (isCoolingBed(expected_temp)&&(CooldownNoWait==false)) )
         {
+
           if(( millis() - codenum) > 1000 ) //Print Temp Reading every 1 second while heating up.
           {
 			  if (!farm_mode) {

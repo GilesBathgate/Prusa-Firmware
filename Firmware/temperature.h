@@ -156,12 +156,20 @@ FORCE_INLINE bool isHeatingBed() {
   return target_temperature_bed > current_temperature_bed;
 };
 
+FORCE_INLINE bool isHeatingBed(float expected_temp) {
+  return expected_temp > current_temperature_bed;
+};
+
 FORCE_INLINE bool isCoolingHotend(uint8_t extruder) {  
   return target_temperature[extruder] < current_temperature[extruder];
 };
 
 FORCE_INLINE bool isCoolingBed() {
   return target_temperature_bed < current_temperature_bed;
+};
+
+FORCE_INLINE bool isCoolingBed(float expected_temp) {
+  return expected_temp < current_temperature_bed;
 };
 
 #define degHotend0() degHotend(0)
